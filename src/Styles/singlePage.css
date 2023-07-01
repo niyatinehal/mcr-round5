@@ -1,0 +1,10 @@
+.single-page{
+    display: flex;
+    padding: 10px;
+    margin-left: 10px;
+    border: 2px solid black;
+}
+.page-content{
+    text-align: left;
+    padding-left: 10px;
+}

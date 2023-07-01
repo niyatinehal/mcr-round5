@@ -3,7 +3,6 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { ListRecipe } from './components/ListRecipe';
 import { AddRecipie } from './components/AddRecipie';
-import { SearchRecipe } from './components/SearchRecipe';
 import { RecipeDetail } from './components/RecipeDetail';
 
 function App() {
@@ -12,7 +11,6 @@ function App() {
       <Routes>
         <Route path='/' element={<ListRecipe/>}/>
         <Route path='/add' element={<AddRecipie/>}/>
-        <Route path='/search' element={<SearchRecipe/>}/>
         <Route path='/recipe/:id' element={<RecipeDetail/>}/>
       </Routes>
     </div>
