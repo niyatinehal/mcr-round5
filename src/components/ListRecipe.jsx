@@ -1,12 +1,15 @@
-import React, { useContext,useState } from "react";
+import React, { useContext, useState } from "react";
+import ReactModal from "react-modal";
 import { RecipeContext } from "../context/RecipieContext";
 import { Link } from "react-router-dom";
 import { SearchRecipe } from "./SearchRecipe";
+import { AddRecipie } from "./AddRecipie";
 
 export const ListRecipe = () => {
-  const {recipeState}=useContext(RecipeContext);
-  const{recipes}=recipeState;
+  const { recipeState,recipeDispatch } = useContext(RecipeContext);
+  const { recipes } = recipeState;
 
+  const [isModalOpen,setIsModalOpen]=useState(false);
   const [searchCategory, setSearchCategory] = useState("name");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(recipes);
@@ -20,38 +23,58 @@ export const ListRecipe = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const filteredRecipes = recipes.filter((recipe) => {
-      switch (searchCategory) {
-        case "name":
-          return recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
-        case "ingredients":
-          return recipe.ingredients
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
-        case "cuisine":
-          return recipe.cuisine
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
-        default:
-          return false;
-      }
+      const categoryValue = recipe[searchCategory].toLowerCase();
+      
+      return categoryValue.includes(searchQuery.toLowerCase());
     });
     setSearchResults([...filteredRecipes]);
   };
 
-  console.log(searchResults)
+  const toggleModal=()=>{
+    setIsModalOpen(!isModalOpen);
+  }
 
-  return <div>
-    <h2>Recipes</h2>
-    {/* search */}
-    <form onSubmit={handleSubmit}>
-        <label>
-          Search Category:
-          <select value={searchCategory} onChange={handleChangeCategory}>
-            <option value="name">Name</option>
-            <option value="ingredients">Ingredients</option>
-            <option value="cuisine">Cuisine</option>
-          </select>
-        </label>
+  const HandleDelete=(id)=>{
+    recipeDispatch({type:"DELETE_RECIPE",payload:id})
+    console.log(recipes)
+  }
+
+  const listItems=searchQuery.length>0 ? searchResults : recipes
+  return (
+    <div>
+      <h2>Recipes</h2>
+      {/* search */}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            type="radio"
+            id="name"
+            value="name"
+            checked={searchCategory === "name"}
+            onChange={handleChangeCategory}
+          />
+          <label htmlFor="name">Name</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="ingredients"
+            value="ingredients"
+            checked={searchCategory === "ingredients"}
+            onChange={handleChangeCategory}
+          />
+          <label htmlFor="ingredients">Ingredients</label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="cuisine"
+            value="cuisine"
+            checked={searchCategory === "cuisine"}
+            onChange={handleChangeCategory}
+          />
+          <label  htmlFor="cuisine">Cuisine</label>
+        </div>
         <br />
         <label>
           Search Query:
@@ -60,13 +83,23 @@ export const ListRecipe = () => {
         <br />
         <button type="submit">Search</button>
       </form>
-    
-    {searchResults.map((recipe)=>(
-      <div key={recipe.id}>
-        <h3>{recipe.name}</h3>
-        <p>Cuisine: {recipe.cuisine}</p>
-        <Link to={`/recipe/${recipe.id}`}>View Details</Link>
-      </div>
-    ))}
-  </div>;
+
+      <button onClick={toggleModal}>Add Recipe</button>
+          <AddRecipie isOpen={isModalOpen} closeModal={toggleModal}/>
+
+      {listItems.map((recipe) => (
+        <div>
+          <div key={recipe.id}>
+          <h3>{recipe.name}</h3>
+          <p>Cuisine: {recipe.cuisine}</p>
+          <Link to={`/recipe/${recipe.id}`}>View Details</Link>
+          <button onClick={()=>HandleDelete(recipe.id)}>Delete </button>
+        </div>
+        
+        </div>
+        
+        
+      ))}
+    </div>
+  );
 };

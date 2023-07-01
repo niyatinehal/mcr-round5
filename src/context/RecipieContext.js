@@ -7,12 +7,13 @@ const initialState = {
   recipes: recipesData,
 };
 
+
 const recipeReducer = (state, action) => {
   switch (action.type) {
     case "ADD_RECIPE":
       return {
         ...state,
-        recipes: [...state.recipe, action.payload],
+        recipes: [...state.recipes, action.payload],
       };
     case "DELETE_RECIPE":
       return {
