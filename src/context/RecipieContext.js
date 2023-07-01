@@ -1,9 +1,10 @@
 import { createContext, useReducer } from "react";
+import { recipesData } from "../db/db";
 
 export const RecipeContext = createContext();
 
 const initialState = {
-  recipes: [],
+  recipes: recipesData,
 };
 
 const recipeReducer = (state, action) => {
@@ -31,7 +32,7 @@ const recipeReducer = (state, action) => {
 };
 
 export const RecipeContextProvider = ({ children }) => {
-    
+
   const [recipeState, recipeDispatch] = useReducer(recipeReducer, initialState);
 
   return (
